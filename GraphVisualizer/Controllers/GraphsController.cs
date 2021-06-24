@@ -25,7 +25,8 @@ namespace GraphVisualizer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Graph>>> GetGraph()
         {
-            return await _context.Graph.ToListAsync();
+            var graph = await _context.Graph.ToListAsync();
+            return Ok(graph);
         }
 
         // GET: graphs/{id}
@@ -36,10 +37,10 @@ namespace GraphVisualizer.Controllers
 
             if (graph == null)
             {
-                return NotFound();
+                return StatusCode(404, new JsonResult("ERROR 404: Graph getting process not completed"));
             }
 
-            return graph;
+            return Ok(graph);
         }
 
         // PUT: graphs/{id}
@@ -48,7 +49,7 @@ namespace GraphVisualizer.Controllers
         {
             if (id != graph.Id)
             {
-                return BadRequest();
+                return StatusCode(400, new JsonResult("ERROR 400: Graph putting process not completed"));
             }
 
             _context.Entry(graph).State = EntityState.Modified;
@@ -61,7 +62,7 @@ namespace GraphVisualizer.Controllers
             {
                 if (!GraphExists(id))
                 {
-                    return NotFound();
+                    return StatusCode(404, new JsonResult("ERROR 404: Graph putting process not completed"));
                 }
                 else
                 {
@@ -76,6 +77,15 @@ namespace GraphVisualizer.Controllers
         [HttpPost]
         public async Task<ActionResult<Graph>> PostGraph(Graph graph)
         {
+            if (graph == null)
+            {
+                return StatusCode(500, new JsonResult("ERROR 500: Graph posting process not completed"));
+            }
+            else if (GraphExists(graph.Id))
+            {
+                return StatusCode(400, new JsonResult("ERROR 400: Graph posting process not completed"));
+            }
+
             _context.Graph.Add(graph);
             await _context.SaveChangesAsync();
 
@@ -91,7 +101,7 @@ namespace GraphVisualizer.Controllers
                 var graph = await _context.Graph.FindAsync(g.Id);
                 if (graph == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new JsonResult("ERROR 404: Graph deleting process not completed"));
                 }
 
                 _context.Graph.Remove(graph);
@@ -108,7 +118,7 @@ namespace GraphVisualizer.Controllers
             var graph = await _context.Graph.FindAsync(id);
             if (graph == null)
             {
-                return NotFound();
+                return StatusCode(404, new JsonResult("ERROR 404: Graph deleting process not completed"));
             }
 
             _context.Graph.Remove(graph);
