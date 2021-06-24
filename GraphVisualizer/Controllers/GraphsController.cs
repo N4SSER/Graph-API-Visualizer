@@ -70,7 +70,7 @@ namespace GraphVisualizer.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: graphs
@@ -89,7 +89,7 @@ namespace GraphVisualizer.Controllers
             _context.Graph.Add(graph);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetGraph", new { id = graph.Id }, graph);
+            return Ok(graph.Id);
         }
 
         // DELETE: graphs

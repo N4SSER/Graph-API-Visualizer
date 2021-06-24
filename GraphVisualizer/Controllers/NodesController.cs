@@ -25,7 +25,8 @@ namespace GraphVisualizer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Node>>> GetNode()
         {
-            return await _context.Node.ToListAsync();
+            var node = await _context.Node.ToListAsync();
+            return Ok(node);
         }
 
         // GET: graphs/{id}/nodes/{nodeId}
@@ -36,10 +37,10 @@ namespace GraphVisualizer.Controllers
 
             if (node == null)
             {
-                return NotFound();
+                return StatusCode(404, new JsonResult("ERROR 404: Node putting process not completed"));
             }
 
-            return node;
+            return Ok(node);
         }
 
         // PUT: graphs/{id}/nodes/{nodeId}
@@ -48,7 +49,7 @@ namespace GraphVisualizer.Controllers
         {
             if (nodeId != node.Id)
             {
-                return BadRequest();
+                return StatusCode(400, new JsonResult("ERROR 400: Node putting process not completed"));
             }
 
             _context.Entry(node).State = EntityState.Modified;
@@ -61,7 +62,7 @@ namespace GraphVisualizer.Controllers
             {
                 if (!NodeExists(nodeId))
                 {
-                    return NotFound();
+                    return StatusCode(404, new JsonResult("ERROR 404: Node putting process not completed"));
                 }
                 else
                 {
@@ -69,17 +70,26 @@ namespace GraphVisualizer.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: graphs/{id}/nodes
         [HttpPost]
         public async Task<ActionResult<Node>> PostNode(Node node)
         {
+            if (node == null)
+            {
+                return StatusCode(500, new JsonResult("ERROR 500: Node posting process not completed"));
+            }
+            else if (NodeExists(node.Id))
+            {
+                return StatusCode(400, new JsonResult("ERROR 400: Node posting process not completed"));
+            }
+
             _context.Node.Add(node);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetNode", new { nodeId = node.Id }, node);
+            return Ok(node.Id);
         }
 
         // DELETE: graphs/{id}/nodes
@@ -91,7 +101,7 @@ namespace GraphVisualizer.Controllers
                 var node = await _context.Node.FindAsync(n.Id);
                 if (node == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new JsonResult("ERROR 404: Node deleting process not completed"));
                 }
 
                 _context.Node.Remove(node);
@@ -108,7 +118,7 @@ namespace GraphVisualizer.Controllers
             var node = await _context.Node.FindAsync(nodeId);
             if (node == null)
             {
-                return NotFound();
+                return StatusCode(404, new JsonResult("ERROR 404: Node deleting process not completed"));
             }
 
             _context.Node.Remove(node);
