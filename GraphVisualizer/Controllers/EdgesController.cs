@@ -25,7 +25,8 @@ namespace GraphVisualizer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Edge>>> GetEdge()
         {
-            return await _context.Edge.ToListAsync();
+            var edge = await _context.Edge.ToListAsync();
+            return Ok(edge);
         }
 
         // GET: graphs/{id}/edges/{edgeId}
@@ -36,10 +37,10 @@ namespace GraphVisualizer.Controllers
 
             if (edge == null)
             {
-                return NotFound();
+                return StatusCode(404, new JsonResult("ERROR 404: Edge getting process not completed"));
             }
 
-            return edge;
+            return Ok(edge);
         }
 
         // PUT: graphs/{id}/edges/{edgeId}
@@ -48,7 +49,7 @@ namespace GraphVisualizer.Controllers
         {
             if (edgeId != edge.Id)
             {
-                return BadRequest();
+                return StatusCode(400, new JsonResult("ERROR 400: Edge putting process not completed"));
             }
 
             _context.Entry(edge).State = EntityState.Modified;
@@ -61,7 +62,7 @@ namespace GraphVisualizer.Controllers
             {
                 if (!EdgeExists(edgeId))
                 {
-                    return NotFound();
+                    return StatusCode(404, new JsonResult("ERROR 404: Edge putting process not completed"));
                 }
                 else
                 {
@@ -69,17 +70,26 @@ namespace GraphVisualizer.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: graphs/{id}/edges/
         [HttpPost]
         public async Task<ActionResult<Edge>> PostEdge(Edge edge)
         {
+            if (edge == null)
+            {
+                return StatusCode(500, new JsonResult("ERROR 500: Edge posting process not completed"));
+            }
+            else if (EdgeExists(edge.Id))
+            {
+                return StatusCode(400, new JsonResult("ERROR 400: Edge posting process not completed"));
+            }
+
             _context.Edge.Add(edge);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEdge", new { edgeId = edge.Id }, edge);
+            return Ok(edge.Id);
         }
 
         // DELETE: graphs/{id}/edges/
@@ -91,7 +101,7 @@ namespace GraphVisualizer.Controllers
                 var edge = await _context.Edge.FindAsync(e.Id);
                 if (edge == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new JsonResult("ERROR 404: Edge deleting process not completed"));
                 }
 
                 _context.Edge.Remove(edge);
@@ -108,7 +118,7 @@ namespace GraphVisualizer.Controllers
             var edge = await _context.Edge.FindAsync(edgeId);
             if (edge == null)
             {
-                return NotFound();
+                return StatusCode(404, new JsonResult("ERROR 404: Edge deleting process not completed"));
             }
 
             _context.Edge.Remove(edge);

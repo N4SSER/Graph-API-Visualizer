@@ -37,7 +37,7 @@ namespace GraphVisualizer.Controllers
 
             if (node == null)
             {
-                return StatusCode(404, new JsonResult("ERROR 404: Node putting process not completed"));
+                return StatusCode(404, new JsonResult("ERROR 404: Node getting process not completed"));
             }
 
             return Ok(node);
