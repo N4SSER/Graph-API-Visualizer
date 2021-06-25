@@ -7,13 +7,8 @@ namespace GraphVisualizer.Models
     {
         private static int CurrentId = 0;
         private int id;
-        private LinkedList<Node> nodes;
-        private LinkedList<Edge> edges;
-
-        public Graph(int id)
-        {
-            this.id = id;
-        }
+        private LinkedList<Node> nodes = new LinkedList<Node>();
+        private LinkedList<Edge> edges = new LinkedList<Edge>();
 
         public Graph()
         {
@@ -21,12 +16,12 @@ namespace GraphVisualizer.Models
         }
 
         /// <summary>Attribute <c>Id</c>  es el número único asignado para identificar el grafo</summary>
-        public int Id { get; set; }
+        public int Id { get => id; set => this.id = value; }
 
         /// <summary>Attribute <c>Nodes</c>  es una colección de objetos tipo Node</summary>
-        public LinkedList<Node> Nodes { get; set; }
+        public LinkedList<Node> Nodes { get => nodes; set => this.nodes = value; }
 
         /// <summary>Attribute <c>Edges</c>  es una colección de objetos tipo Edge</summary>
-        public LinkedList<Edge> Edges { get; set; }
+        public LinkedList<Edge> Edges { get => edges; set => this.edges = value; }
     }
 }

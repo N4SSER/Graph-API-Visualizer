@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GraphVisualizer.Controllers
 {
-    [Route("graphs/{id}/[controller]")]
+    [Route("graphs/{id}/edges")]
     [ApiController]
 
     /// <summary>Class <c>EdgesController</c>  es el controlador HTTP de las aristas del grafo</summary>
@@ -75,9 +75,11 @@ namespace GraphVisualizer.Controllers
 
         // POST: graphs/{id}/edges/
         [HttpPost]
-        public async Task<ActionResult<Edge>> PostEdge(Edge edge)
+        public async Task<ActionResult<Edge>> PostEdge([FromRoute] int id, Edge edge)
         {
-            if (edge == null)
+            var graph = await _context.Graph.FindAsync(id);
+
+            if (graph == null || edge == null)
             {
                 return StatusCode(500, new JsonResult("ERROR 500: Edge posting process not completed"));
             }
@@ -85,6 +87,9 @@ namespace GraphVisualizer.Controllers
             {
                 return StatusCode(400, new JsonResult("ERROR 400: Edge posting process not completed"));
             }
+
+            graph.Edges.Append(edge);
+            _context.Graph.Update(graph);
 
             _context.Edge.Add(edge);
             await _context.SaveChangesAsync();

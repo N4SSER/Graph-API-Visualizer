@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GraphVisualizer.Controllers
 {
-    [Route("graphs/{id}/[controller]")]
+    [Route("graphs/{id}/nodes")]
     [ApiController]
 
     /// <summary>Class <c>NodesController</c>  es el controlador HTTP de los nodos del grafo</summary>
@@ -75,9 +75,11 @@ namespace GraphVisualizer.Controllers
 
         // POST: graphs/{id}/nodes
         [HttpPost]
-        public async Task<ActionResult<Node>> PostNode(Node node)
+        public async Task<ActionResult<Node>> PostNode([FromRoute] int id, Node node)
         {
-            if (node == null)
+            var graph = await _context.Graph.FindAsync(id);
+
+            if (graph == null || node == null )
             {
                 return StatusCode(500, new JsonResult("ERROR 500: Node posting process not completed"));
             }
@@ -85,6 +87,9 @@ namespace GraphVisualizer.Controllers
             {
                 return StatusCode(400, new JsonResult("ERROR 400: Node posting process not completed"));
             }
+
+            graph.Nodes.Append(node);
+            _context.Graph.Update(graph);
 
             _context.Node.Add(node);
             await _context.SaveChangesAsync();

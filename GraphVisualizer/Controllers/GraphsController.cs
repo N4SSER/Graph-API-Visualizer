@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GraphVisualizer.Controllers
 {
-    [Route("[controller]")]
+    [Route("graphs")]
     [ApiController]
 
     /// <summary>Class <c>GraphsController</c>  es el controlador HTTP de los grafos</summary>
