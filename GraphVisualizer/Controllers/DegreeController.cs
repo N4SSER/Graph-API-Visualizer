@@ -32,12 +32,12 @@ namespace GraphVisualizer.Controllers
 
                 if (sort == "DESC")
                 {
-                    var degrees = await _context.Node.OrderByDescending(n => averageDegree).ToListAsync();
+                    var degrees = await _context.Node.OrderByDescending(n => n.Id).ToListAsync();
                     return Ok(degrees);
                 }
                 else if (sort == "ASC")
                 {
-                    var degrees = await _context.Node.OrderBy(n => averageDegree).ToListAsync();
+                    var degrees = await _context.Node.OrderBy(n => n.Id).ToListAsync();
                     return Ok(degrees);
                 }
 
