@@ -39,6 +39,8 @@ namespace GraphVisualizer.Controllers
             {
                 return StatusCode(404, new JsonResult("ERROR 404: Node getting process not completed"));
             }
+            CMPDegree nod = new(_context);
+            Dictionary<int,int> a = nod.outDegree;
 
             return Ok(node);
         }
